@@ -30,7 +30,6 @@ Este projeto visa criar um hub de dados centralizado para coletar, transformar e
 │   ├── 🏗️ arquitetura.png
 │   └── 🚀 fluxo_dados.png
 ├── 📚 documentacao/
-│   ├── 📄 README.md
 │   ├── 🌐 Arquitetura_Sistema.md
 │   ├── 📈 Fluxo_Dados.md
 │   ├── 🔄 Modelo_Interoperabilidade.md
