@@ -1,0 +1,6 @@
+[
+    {"ID": 1, "Curso": "Matemática", "Professor": "Prof_A"},
+    {"ID": 2, "Curso": "Português", "Professor": ""},
+    {"ID": 3, "Curso": "", "Professor": "Prof_C"},
+    {"ID": 3, "Curso": "", "Professor": "Prof_C"}  # duplicado
+]

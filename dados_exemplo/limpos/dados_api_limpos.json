@@ -1,0 +1,5 @@
+[
+    {"ID": 1, "Curso": "Matemática", "Professor": "Prof_A"},
+    {"ID": 2, "Curso": "Português", "Professor": "Prof_A"},  # preenchido com a moda
+    {"ID": 3, "Curso": "Matemática", "Professor": "Prof_C"}  # preenchido com a moda
+]
