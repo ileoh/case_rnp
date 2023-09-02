@@ -5,22 +5,12 @@ pandas==1.3.0
 # Data ingestion and API requests
 requests==2.26.0
 google-cloud-storage==1.42.0
-google-cloud-bigquery==2.23.0
 
-# Data cleaning
-beautifulsoup4==4.9.3
-textblob==0.15.3
-
-# Data visualization (Optional, if you plan to do some data visualization in Python)
-matplotlib==3.4.2
-seaborn==0.11.1
+# Database connectors
+pymysql==1.0.2  # For MySQL, as it's used in the ingestion script
 
 # Data encryption and security for LGPD compliance
 cryptography==3.4.7
 
-# ORMs and database connectors
-SQLAlchemy==1.4.20
-psycopg2==2.9.1  # For PostgreSQL, if needed
-
-# Scheduler for automated jobs
+# Scheduler for automated jobs (if needed)
 schedule==1.1.0
