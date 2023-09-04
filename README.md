@@ -66,7 +66,3 @@ Este projeto visa criar um hub de dados centralizado para coletar, transformar e
 ### 📖 Uso
 
 Para mais detalhes sobre como usar este projeto, consulte o [Manual do Usuário](documentacao/Manual_Usuario.md).
-
-## 📜 Licença
-
-Este projeto está sob a licença MIT - veja o arquivo [LICENSE.md](LICENSE.md) para detalhes.

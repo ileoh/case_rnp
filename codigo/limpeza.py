@@ -6,6 +6,9 @@ from google.cloud import storage
 
 # Constantes
 GCP_STORAGE_BUCKET = 'your_gcp_storage_bucket'
+GCP_BIGQUERY_TABLE = 'your_gcp_bigquery_table'
+
+SCENARIO = "high_performance"  # Altere para "cost_effective" para cenário de custo efetivo
 
 # 2. Funções de Limpeza
 def remove_duplicates(df):
@@ -29,13 +32,7 @@ def check_missing_values(df):
 def check_duplicate_values(df):
     return df.duplicated().sum()
 
-# 5. Anonimização de Dados para LGPD
-def anonymize_data(df, sensitive_columns):
-    for column in sensitive_columns:
-        df[column] = df[column].apply(hash)
-    return df
-
-# 6. Envio para o GCP
+# 5. Envio para o GCP
 def upload_to_gcp_storage(df, file_name):
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(GCP_STORAGE_BUCKET)
@@ -45,18 +42,17 @@ def upload_to_gcp_storage(df, file_name):
 # Função Principal
 def main():
     # Suponha que o DataFrame df contenha os dados coletados
-    df = pd.read_csv('path/to/your/raw/data.csv')
+    # df = pd.read_csv('path/to/your/raw/data.csv')
     
-    # Limpeza de Dados
+    if SCENARIO == "high_performance":
+        # Limpeza de Dados mais intensiva (por exemplo, preenchimento de valores ausentes)
+        df = handle_missing_values(df)
+    else:
+        # Limpeza de Dados mais simples para custo-efetividade (por exemplo, remover linhas com valores ausentes)
+        df = handle_missing_values(df, strategy='drop')
+    
     df = remove_duplicates(df)
-    df = handle_missing_values(df)
-    
-    # Transformação de Dados
     df = convert_to_numeric(df, 'some_numeric_column')
-    
-    # Anonimização de Dados (LGPD)
-    sensitive_columns = ['name', 'email', 'address']  # exemplo
-    df = anonymize_data(df, sensitive_columns)
     
     # Verificação de Qualidade
     print('Missing values:', check_missing_values(df))

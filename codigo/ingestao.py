@@ -1,93 +1,77 @@
 # ingestao.py
 
-# Configurações Iniciais
-import os
+# 1. Configurações Iniciais
 import requests
 import csv
 import pymysql
 from google.cloud import storage
-import logging
 
-# Constantes (essas informações devem ser armazenadas de forma segura, não diretamente no código)
-DB_HOST = os.environ.get('DB_HOST')
-DB_USER = os.environ.get('DB_USER')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_NAME = os.environ.get('DB_NAME')
+# Constantes
+DB_HOST = 'your_db_host'
+DB_USER = 'your_db_user'
+DB_PASSWORD = 'your_db_password'
+DB_NAME = 'your_db_name'
 
-GCP_STORAGE_BUCKET = os.environ.get('GCP_STORAGE_BUCKET')
+GCP_STORAGE_BUCKET = 'your_gcp_storage_bucket'
+GCP_BIGQUERY_TABLE = 'your_gcp_bigquery_table'
 
-# Configurar logging
-logging.basicConfig(level=logging.INFO)
+SCENARIO = "high_performance"  # Altere para "cost_effective" para cenário de custo efetivo
 
-# Funções de Auxílio
+# 2. Funções de Auxílio
 def get_db_connection():
-    try:
-        return pymysql.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME
-        )
-    except Exception as e:
-        logging.error(f"Erro ao conectar com o banco de dados: {e}")
+    return pymysql.connect(
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME
+    )
 
 def get_api_data(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        logging.error(f"Erro ao buscar dados da API: {e}")
+    response = requests.get(url)
+    return response.json()
 
 def upload_to_gcp_storage(file_name, file_path):
-    try:
-        storage_client = storage.Client()
-        bucket = storage_client.get_bucket(GCP_STORAGE_BUCKET)
-        blob = bucket.blob(file_name)
-        blob.upload_from_filename(file_path)
-    except Exception as e:
-        logging.error(f"Erro ao fazer upload para o GCP Storage: {e}")
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(GCP_STORAGE_BUCKET)
+    blob = bucket.blob(file_name)
+    blob.upload_from_filename(file_path)
 
-# Ingestão de Dados do Banco Relacional
+# 3. Ingestão de Dados do Banco Relacional
 def fetch_relational_data():
     connection = get_db_connection()
-    if connection:
-        cursor = connection.cursor()
+    cursor = connection.cursor()
+    
+    if SCENARIO == "high_performance":
         query = "SELECT * FROM your_table;"
-        cursor.execute(query)
-        data = cursor.fetchall()
-
-        # TODO: Trate e armazene os dados em conformidade com a LGPD antes de enviá-los.
-
-        # TODO: Envie os dados para o GCP (Cloud Storage, BigQuery)
-        upload_to_gcp_storage('relational_data.csv', '/path/to/your/csv')
-
-# Ingestão de Dados de Arquivos CSV
-def fetch_csv_data(file_path):
-    try:
-        data = []
-        with open(file_path, 'r') as file:
-            csv_reader = csv.reader(file)
-            for row in csv_reader:
-                data.append(row)
+    else:
+        query = "SELECT * FROM your_table LIMIT 1000;"
         
-        # TODO: Trate e armazene os dados em conformidade com a LGPD antes de enviá-los.
+    cursor.execute(query)
+    data = cursor.fetchall()
+    
+    upload_to_gcp_storage('relational_data.csv', '/path/to/your/csv')
 
-        # TODO: Envie os dados para o GCP (Cloud Storage, BigQuery)
-        upload_to_gcp_storage('csv_data.csv', '/path/to/your/csv')
-    except Exception as e:
-        logging.error(f"Erro ao ler o arquivo CSV: {e}")
+# 4. Ingestão de Dados de Arquivos CSV
+def fetch_csv_data(file_path):
+    data = []
+    with open(file_path, 'r') as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            data.append(row)
+    
+    upload_to_gcp_storage('csv_data.csv', '/path/to/your/csv')
 
-# Ingestão de Dados de API
+# 5. Ingestão de Dados de API
 def fetch_api_data(api_url):
     data = get_api_data(api_url)
-    if data:
-        # TODO: Trate e armazene os dados em conformidade com a LGPD antes de enviá-los.
+    
+    if SCENARIO == "cost_effective":
+        # Suponhamos que temos uma forma de limitar a quantidade de dados baixados em um cenário de custo efetivo
+        data = data[:100]
+    
+    upload_to_gcp_storage('api_data.json', '/path/to/your/json')
 
-        # TODO: Envie os dados para o GCP (Cloud Storage, BigQuery)
-        upload_to_gcp_storage('api_data.json', '/path/to/your/json')
-
-# Inicializando ingestão de dados
+# 6. Inicializando ingestão de dados
 if __name__ == "__main__":
     fetch_relational_data()
     fetch_csv_data('/path/to/your/csv')
